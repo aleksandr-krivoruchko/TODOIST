@@ -13,10 +13,10 @@
   font-size: 20px;
 }
 .input-text {
-  height: 30px;
+  height: 40px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 1px solid orange;
+  border: 3px solid orange;
   outline: none;
   background-color: inherit;
 }
@@ -60,4 +60,36 @@
 }
 .text {
   margin-left: 10px;
+}
+.delete-modal {
+  background-color: aliceblue;
+  padding: 20px;
+  border-radius: 5px;
+}
+.button-modal-del {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: red;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+}
+
+.button-modal-cancel {
+  background-color: cadetblue;
+  margin-right: 10px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+}
+
+.done {
+  background-color: darkseagreen;
+  color: #fff;
+}
+
+.need {
+  background-color: honeydew;
+  color: green;
 }

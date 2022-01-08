@@ -1,8 +1,34 @@
-import './css/style.css';
+import {loadData, saveData} from "./api";
+import toastr from "toastr";
 import { v4 as uuidv4 } from 'uuid';
+import * as basicLightbox from 'basiclightbox';
 
-const itemTemplate = ({ id, label, checked }) =>
-  `<li data-id=${id} class="item">
+import "toastr/build/toastr.min.css";
+import "basiclightbox/dist/basicLightbox.min.css";
+import './css/style.css';
+
+
+toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-top-left",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "3000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
+
+
+const itemTemplate = ({ id, label, checked,}) =>
+  `<li data-id=${id} class="item ${checked ? "done" : "need"}">
     <label>
       <input type="checkbox" ${checked ? 'checked' : ''} />
       <span>${label}</span>
@@ -10,23 +36,51 @@ const itemTemplate = ({ id, label, checked }) =>
     <button type="button" class="close-btn ">x</button>
   </li>`;
 
+  const deleteTodo = basicLightbox.create(`
+<div class="delete-modal">
+	<h1>Do you really want to delete this TODO ???</h1>
+	<p id='text'>my todo</p>
+	<button class="button-modal-del">DELETE</button>
+	<button class="button-modal-cancel">CANCEL</button>
+	</div>
+	`);
+
 const refs = { 
 form: document.querySelector('form'),
 list: document.querySelector('.list'),
-printBtn: document.querySelector(".print-btn")
+printBtn: document.querySelector(".print-btn"),
+modalText: deleteTodo.element().querySelector("#text"),
+modalBtnDelete: deleteTodo.element().querySelector(".button-modal-del"),
+modalBtnCancel: deleteTodo.element().querySelector(".button-modal-cancel")
 }
 
 let todos = [
-{id:1, label:"buy milk", checked:true},
-{id:2, label:"buy milk", checked:false},
-{id:3, label:"buy milk", checked:false},
-{id:4, label:"buy milk", checked:false},
+// {id:1, label:"buy milk", checked:true},
+// {id:2, label:"buy milk", checked:false},
+// {id:3, label:"buy milk", checked:false},
+// {id:4, label:"buy milk", checked:false},
 ];
 
-refs.list.addEventListener("click", handleClick);
+let currentId;
+
+ 
+function onLoad() {
+	todos = loadData('todos');
+
+	refs.list.addEventListener("click", handleClick);
 refs.printBtn.addEventListener("click", onPrintBtn);
 refs.form.addEventListener("submit", onSubmitBtn);
+refs.modalBtnDelete.addEventListener("click", onModalBtnDelete);
+refs.modalBtnCancel.addEventListener("click", onModalBtnCancel);
 
+	render();
+}
+
+function render() {
+	const items = todos.map(todo => itemTemplate(todo));
+refs.list.innerHTML = items.join(' ');
+saveData('todos', todos);
+}
 
 function onSubmitBtn(e) {
 	e.preventDefault();
@@ -39,6 +93,7 @@ function onSubmitBtn(e) {
 const newTodo = {id:uuidv4(), label:value, checked:true};
 todos.push(newTodo);
 refs.form.reset();
+toastr.success("Your TODO is created successfully)))");
 render();
 }
 
@@ -67,7 +122,10 @@ function handleClick(e){
 }
 
 function deleteItem(id) {
-	todos = todos.filter(todo => todo.id != id);
+	      currentId = id;
+			const {label} = todos.find(todo => todo.id === id);
+		refs.modalText.textContent = label;
+		deleteTodo.show();
 }
 
 function toggleItem(id) {
@@ -77,13 +135,18 @@ function toggleItem(id) {
 		 checked: !todo.checked,
 		} 
 		: todo);
-
 }
 
-function render() {
-	const items = todos.map(todo => itemTemplate(todo));
-refs.list.innerHTML = items;
+function onModalBtnCancel(e) {
+	deleteTodo.close();
 }
 
+function onModalBtnDelete(e) {
+	toastr.warning("Your TODO is deleted now!!!");
+	todos = todos.filter(todo => todo.id != currentId);
+		deleteTodo.close();
+render();
+}
 
-	render();
+onLoad();
+
