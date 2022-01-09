@@ -1,4 +1,4 @@
-import {loadData, saveData} from "./api";
+import {fetchTodos, loadData, saveData} from "./api";
 import toastr from "toastr";
 import { v4 as uuidv4 } from 'uuid';
 import * as basicLightbox from 'basiclightbox';
@@ -6,7 +6,6 @@ import * as basicLightbox from 'basiclightbox';
 import "toastr/build/toastr.min.css";
 import "basiclightbox/dist/basicLightbox.min.css";
 import './css/style.css';
-
 
 toastr.options = {
   "closeButton": true,
@@ -26,8 +25,7 @@ toastr.options = {
   "hideMethod": "fadeOut"
 }
 
-
-const itemTemplate = ({ id, label, checked,}) =>
+const itemTemplate = ({ id, label, checked}) =>
   `<li data-id=${id} class="item ${checked ? "done" : "need"}">
     <label>
       <input type="checkbox" ${checked ? 'checked' : ''} />
@@ -37,13 +35,13 @@ const itemTemplate = ({ id, label, checked,}) =>
   </li>`;
 
   const deleteTodo = basicLightbox.create(`
-<div class="delete-modal">
-	<h1>Do you really want to delete this TODO ???</h1>
-	<p id='text'>my todo</p>
-	<button class="button-modal-del">DELETE</button>
-	<button class="button-modal-cancel">CANCEL</button>
-	</div>
-	`);
+ <div class="delete-modal">
+ 	<h1>Do you really want to delete this TODO ???</h1>
+ 	<p id='text'>my todo</p>
+ 	<button class="button-modal-del">DELETE</button>
+ 	<button class="button-modal-cancel">CANCEL</button>
+ 	</div>
+ 	`);
 
 const refs = { 
 form: document.querySelector('form'),
@@ -63,38 +61,49 @@ let todos = [
 
 let currentId;
 
- 
-function onLoad() {
-	todos = loadData('todos');
-
+function addEventListeners() {
 	refs.list.addEventListener("click", handleClick);
 refs.printBtn.addEventListener("click", onPrintBtn);
 refs.form.addEventListener("submit", onSubmitBtn);
 refs.modalBtnDelete.addEventListener("click", onModalBtnDelete);
 refs.modalBtnCancel.addEventListener("click", onModalBtnCancel);
 
+}
+ 
+function start() {
+todos = fetchTodos('todos');
+addEventListeners();
 	render();
 }
 
 function render() {
 	const items = todos.map(todo => itemTemplate(todo));
-refs.list.innerHTML = items.join(' ');
+refs.list.innerHTML = items.join('');
 saveData('todos', todos);
+}
+
+function addTodo(value) {
+	const newTodo = {id:uuidv4(), label:value, checked:false};
+	
+todos.push(newTodo);
+toastr.success("Your TODO is created successfully)))");
+
+return Promise.resolve();
 }
 
 function onSubmitBtn(e) {
 	e.preventDefault();
 	const value = e.currentTarget.elements.input.value;
 
-	if(!value){
-		return
-	}
+	if(!value) return
 
-const newTodo = {id:uuidv4(), label:value, checked:true};
-todos.push(newTodo);
-refs.form.reset();
-toastr.success("Your TODO is created successfully)))");
-render();
+// addTodo(value).then(() => {
+// refs.form.reset();
+// render();
+// });
+addTodo(value)
+.then(refs.form.reset())
+.then(render);
 }
 
 function onPrintBtn(e) {
@@ -123,7 +132,7 @@ function handleClick(e){
 
 function deleteItem(id) {
 	      currentId = id;
-			const {label} = todos.find(todo => todo.id === id);
+			const {label} = todos.find(todo => todo.id == id);
 		refs.modalText.textContent = label;
 		deleteTodo.show();
 }
@@ -148,5 +157,5 @@ function onModalBtnDelete(e) {
 render();
 }
 
-onLoad();
+start();
 
