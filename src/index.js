@@ -1,5 +1,5 @@
 import {fetchTodos, loadData, saveData} from "./api";
-import toastr from "toastr";
+import toastr, { error } from "toastr";
 import { v4 as uuidv4 } from 'uuid';
 import * as basicLightbox from 'basiclightbox';
 
@@ -43,6 +43,13 @@ const itemTemplate = ({ id, label, checked}) =>
  	</div>
  	`);
 
+	   const loadingModal = basicLightbox.create(`
+ <div class="loading-modal">
+ 	<p id='text'>Please wait a bit ...</p>
+ 	</div>
+ 	`);
+
+
 const refs = { 
 form: document.querySelector('form'),
 list: document.querySelector('.list'),
@@ -71,15 +78,24 @@ refs.modalBtnCancel.addEventListener("click", onModalBtnCancel);
 }
  
 function start() {
-todos = fetchTodos('todos');
-addEventListeners();
+loadingModal.show();
+fetchTodos('todos')
+.then((data) => {
+	todos = data;
 	render();
+})
+.catch((errorMessage) => {
+	toastr.error(errorMessage);
+})
+.finally(() => {
+	addEventListeners();
+	loadingModal.close();
+})
 }
 
 function render() {
 	const items = todos.map(todo => itemTemplate(todo));
 refs.list.innerHTML = items.join('');
-saveData('todos', todos);
 }
 
 function addTodo(value) {
@@ -87,6 +103,7 @@ function addTodo(value) {
 	
 todos.push(newTodo);
 toastr.success("Your TODO is created successfully)))");
+saveData('todos', todos);
 
 return Promise.resolve();
 }
@@ -135,6 +152,7 @@ function deleteItem(id) {
 			const {label} = todos.find(todo => todo.id == id);
 		refs.modalText.textContent = label;
 		deleteTodo.show();
+
 }
 
 function toggleItem(id) {
@@ -144,6 +162,15 @@ function toggleItem(id) {
 		 checked: !todo.checked,
 		} 
 		: todo);
+
+		loadingModal.show();
+		saveData('todos', todos)
+		.finally(() => {
+		render();
+		loadingModal.close()
+		})
+		
+
 }
 
 function onModalBtnCancel(e) {
@@ -151,10 +178,16 @@ function onModalBtnCancel(e) {
 }
 
 function onModalBtnDelete(e) {
-	toastr.warning("Your TODO is deleted now!!!");
 	todos = todos.filter(todo => todo.id != currentId);
 		deleteTodo.close();
-render();
+
+		loadingModal.show();
+		saveData('todos', todos)
+		.then(() => {
+		render();
+	toastr.warning("Your TODO is deleted now!!!");
+		})
+		.finally(loadingModal.close());
 }
 
 start();

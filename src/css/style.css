@@ -93,3 +93,11 @@
   background-color: honeydew;
   color: green;
 }
+
+.loading-modal {
+  background-color: aqua;
+  padding: 20px;
+  color: blueviolet;
+  font-size: 50px;
+  border-radius: 20px;
+}
