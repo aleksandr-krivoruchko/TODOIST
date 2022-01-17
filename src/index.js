@@ -1,4 +1,4 @@
-import {fetchTodos, loadData, saveData} from "./api";
+import {createTodo, getTodos, updateTodo, removeTodo, removeAllTodos} from "./api";
 import toastr, { error } from "toastr";
 import { v4 as uuidv4 } from 'uuid';
 import * as basicLightbox from 'basiclightbox';
@@ -70,7 +70,7 @@ let currentId;
 
 function addEventListeners() {
 	refs.list.addEventListener("click", handleClick);
-refs.printBtn.addEventListener("click", onPrintBtn);
+refs.printBtn.addEventListener("click", onClearBtn);
 refs.form.addEventListener("submit", onSubmitBtn);
 refs.modalBtnDelete.addEventListener("click", onModalBtnDelete);
 refs.modalBtnCancel.addEventListener("click", onModalBtnCancel);
@@ -79,7 +79,7 @@ refs.modalBtnCancel.addEventListener("click", onModalBtnCancel);
  
 function start() {
 loadingModal.show();
-fetchTodos('todos')
+getTodos('todos')
 .then((data) => {
 	todos = data;
 	render();
@@ -99,32 +99,37 @@ refs.list.innerHTML = items.join('');
 }
 
 function addTodo(value) {
-	const newTodo = {id:uuidv4(), label:value, checked:false};
-	
-todos.push(newTodo);
-toastr.success("Your TODO is created successfully)))");
-saveData('todos', todos);
+	// const newTodo = {id:uuidv4(), label:value, checked:false};
+		const newTodo = {label:value, checked:false};
 
-return Promise.resolve();
+toastr.success("Your TODO is created successfully)))");
+
+	return createTodo(newTodo).then(data => {
+		todos.push(data);
+	})
+
+// saveData('todos', todos);
+// return Promise.resolve();
 }
 
 function onSubmitBtn(e) {
 	e.preventDefault();
 	const value = e.currentTarget.elements.input.value;
 
-	if(!value) return
+	if(!value) return toastr.success("Enter details about your plans");
 
-// addTodo(value).then(() => {
-// refs.form.reset();
-// render();
-// });
+
 addTodo(value)
 .then(refs.form.reset())
 .then(render);
 }
 
-function onPrintBtn(e) {
-	console.table(todos);
+function onClearBtn(e) {
+	todos = todos.map((todo)=> {removeTodo(todo.id)})
+	todos = [];
+	refs.list.innerHTML = "";
+	toastr.success("Your todos are deleted!")
+
 }
 
 function handleClick(e){
@@ -156,20 +161,30 @@ function deleteItem(id) {
 }
 
 function toggleItem(id) {
-		todos = todos.map(todo => todo.id == id 
-		? {
-       ...todo,
-		 checked: !todo.checked,
-		} 
-		: todo);
-
-		loadingModal.show();
-		saveData('todos', todos)
-		.finally(() => {
-		render();
-		loadingModal.close()
+	
+		// todos = todos.map(todo => todo.id == id 
+		// ? {
+      //  ...todo,
+		//  checked: !todo.checked,
+		// } 
+		// : todo);
+		// loadingModal.show();
+		// saveData('todos', todos)
+		// .finally(() => {
+		// render();
+		// loadingModal.close()
+		// })
+		const todo = todos.find((todo) => todo.id === id);
+		const payload = {
+			...todo,
+			checked: !todo.checked,
+		}
+		updateTodo(id, payload)
+		.then((data)=> {
+			todos = todos.map((todo)=> todo.id === id ? data : todo)
+		}).finally(()=> {
+			render();
 		})
-		
 
 }
 
@@ -178,16 +193,23 @@ function onModalBtnCancel(e) {
 }
 
 function onModalBtnDelete(e) {
-	todos = todos.filter(todo => todo.id != currentId);
-		deleteTodo.close();
+	// todos = todos.filter(todo => todo.id != currentId);
+	// 	deleteTodo.close();
 
-		loadingModal.show();
-		saveData('todos', todos)
-		.then(() => {
+	// 	loadingModal.show();
+	// 	saveData('todos', todos)
+	// 	.then(() => {
+	// 	render();
+	// toastr.warning("Your TODO is deleted now!!!");
+	// 	})
+	// 	.finally(loadingModal.close());
+	removeTodo(currentId)
+	.then(() => {toastr.warning("Your TODO is deleted now!!!")})
+	.then(()=>{todos = todos.filter(todo => todo.id != currentId)})
+	.finally(()=>{	
 		render();
-	toastr.warning("Your TODO is deleted now!!!");
-		})
-		.finally(loadingModal.close());
+		deleteTodo.close();
+})
 }
 
 start();
