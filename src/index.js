@@ -46,6 +46,13 @@ const itemTemplate = ({ id, label, checked}) =>
 	   const loadingModal = basicLightbox.create(`
  <div class="loading-modal">
  	<p id='text'>Please wait a bit ...</p>
+	 	 <div class="preloader">
+  <div class="preloader__row">
+    <div class="preloader__item"></div>
+    <div class="preloader__item"></div>
+  </div>
+</div>
+
  	</div>
  	`);
 

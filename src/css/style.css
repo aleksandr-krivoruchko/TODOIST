@@ -1,42 +1,63 @@
+body {
+  background-image: url(../img/Norway_Mountains.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .container {
   width: 250px;
   margin: 0 auto;
+  padding-top: 20px;
 }
 .wrapper-form {
   margin-bottom: 20px;
 }
 .label {
-  width: 200px;
+  width: 280px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   font-size: 20px;
 }
 .input-text {
   height: 40px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 3px solid orange;
+  border: 3px solid blue;
   outline: none;
-  background-color: inherit;
+  background-color: transparent;
+  caret-color: #fff;
+  font-size: 20px;
+  color: #fff;
 }
-.input-text:focus {
+/* .input-text:focus {
   border-color: green;
+} */
+input::placeholder {
+  color: blue;
 }
-.submit-btn {
+
+.btns {
+  display: flex;
+  justify-content: space-between;
+  width: 280px;
+}
+.btn {
+  width: 110px;
   padding: 5px;
-  margin-right: 20px;
-  border-radius: 10px;
-  background-color: green;
-  color: aliceblue;
-  border: none;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  outline-color: blue;
 }
-.print-btn {
-  padding: 5px 15px;
-  border-radius: 10px;
-  background-color: blue;
-  color: aliceblue;
-  border: none;
+
+.submit-btn {
+  margin-right: 20px;
+  background-color: green;
+}
+.clear-btn {
+  background-color: violet;
 }
 .list {
   list-style: none;
@@ -44,6 +65,7 @@
   margin: 0;
 }
 .item {
+  width: 260px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -53,10 +75,11 @@
   padding: 5px;
 }
 .close-btn {
-  background-color: inherit;
+  background-color: transparent;
   color: red;
   border: 1px solid red;
   border-radius: 50%;
+  cursor: pointer;
 }
 .text {
   margin-left: 10px;
@@ -65,6 +88,7 @@
   background-color: aliceblue;
   padding: 20px;
   border-radius: 5px;
+  color: gray;
 }
 .button-modal-del {
   margin-right: 10px;
@@ -73,6 +97,7 @@
   border-radius: 10px;
   border: none;
   color: #fff;
+  cursor: pointer;
 }
 
 .button-modal-cancel {
@@ -82,6 +107,7 @@
   border-radius: 10px;
   border: none;
   color: #fff;
+  cursor: pointer;
 }
 
 .done {
@@ -95,9 +121,79 @@
 }
 
 .loading-modal {
-  background-color: aqua;
+  background-color: #eee;
   padding: 20px;
-  color: blueviolet;
+  color: gray;
   font-size: 50px;
   border-radius: 20px;
+}
+.title {
+  font-size: 50px;
+  color: #fff;
+  letter-spacing: 5px;
+}
+
+/* SPINNER */
+.preloader {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 22;
+}
+
+.preloader__row {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  margin-top: -35px;
+  margin-left: -35px;
+  text-align: center;
+  animation: preloader-rotate 2s infinite linear;
+}
+
+.preloader__item {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  background-color: #337ab7;
+  border-radius: 100%;
+  width: 35px;
+  height: 35px;
+  animation: preloader-bounce 2s infinite ease-in-out;
+}
+
+.preloader__item:last-child {
+  top: auto;
+  bottom: 0;
+  animation-delay: -1s;
+}
+
+@keyframes preloader-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes preloader-bounce {
+  0%,
+  100% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+}
+
+.loaded_hiding .preloader {
+  transition: 0.3s opacity;
+  opacity: 0;
+}
+
+.loaded .preloader {
+  display: none;
 }
