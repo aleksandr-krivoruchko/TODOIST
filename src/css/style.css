@@ -1,63 +1,42 @@
-body {
-  background-image: url(../img/Norway_Mountains.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
 .container {
   width: 250px;
   margin: 0 auto;
-  padding-top: 20px;
 }
 .wrapper-form {
   margin-bottom: 20px;
 }
 .label {
-  width: 280px;
+  width: 200px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 20px;
 }
 .input-text {
   height: 40px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 3px solid blue;
+  border: 3px solid orange;
   outline: none;
-  background-color: transparent;
-  caret-color: #fff;
-  font-size: 20px;
-  color: #fff;
+  background-color: inherit;
 }
-/* .input-text:focus {
+.input-text:focus {
   border-color: green;
-} */
-input::placeholder {
-  color: blue;
 }
-
-.btns {
-  display: flex;
-  justify-content: space-between;
-  width: 280px;
-}
-.btn {
-  width: 110px;
-  padding: 5px;
-  border-radius: 7px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 20px;
-  outline-color: blue;
-}
-
 .submit-btn {
+  padding: 5px;
   margin-right: 20px;
+  border-radius: 10px;
   background-color: green;
+  color: aliceblue;
+  border: none;
 }
-.clear-btn {
-  background-color: violet;
+.print-btn {
+  padding: 5px 15px;
+  border-radius: 10px;
+  background-color: blue;
+  color: aliceblue;
+  border: none;
 }
 .list {
   list-style: none;
@@ -65,7 +44,6 @@ input::placeholder {
   margin: 0;
 }
 .item {
-  width: 260px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -75,11 +53,10 @@ input::placeholder {
   padding: 5px;
 }
 .close-btn {
-  background-color: transparent;
+  background-color: inherit;
   color: red;
   border: 1px solid red;
   border-radius: 50%;
-  cursor: pointer;
 }
 .text {
   margin-left: 10px;
@@ -88,7 +65,6 @@ input::placeholder {
   background-color: aliceblue;
   padding: 20px;
   border-radius: 5px;
-  color: gray;
 }
 .button-modal-del {
   margin-right: 10px;
@@ -97,7 +73,6 @@ input::placeholder {
   border-radius: 10px;
   border: none;
   color: #fff;
-  cursor: pointer;
 }
 
 .button-modal-cancel {
@@ -107,7 +82,6 @@ input::placeholder {
   border-radius: 10px;
   border: none;
   color: #fff;
-  cursor: pointer;
 }
 
 .done {
@@ -121,79 +95,9 @@ input::placeholder {
 }
 
 .loading-modal {
-  background-color: #eee;
+  background-color: aqua;
   padding: 20px;
-  color: gray;
+  color: blueviolet;
   font-size: 50px;
   border-radius: 20px;
-}
-.title {
-  font-size: 50px;
-  color: #fff;
-  letter-spacing: 5px;
-}
-
-/* SPINNER */
-.preloader {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 22;
-}
-
-.preloader__row {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  width: 70px;
-  height: 70px;
-  margin-top: -35px;
-  margin-left: -35px;
-  text-align: center;
-  animation: preloader-rotate 2s infinite linear;
-}
-
-.preloader__item {
-  position: absolute;
-  display: inline-block;
-  top: 0;
-  background-color: #337ab7;
-  border-radius: 100%;
-  width: 35px;
-  height: 35px;
-  animation: preloader-bounce 2s infinite ease-in-out;
-}
-
-.preloader__item:last-child {
-  top: auto;
-  bottom: 0;
-  animation-delay: -1s;
-}
-
-@keyframes preloader-rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes preloader-bounce {
-  0%,
-  100% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1);
-  }
-}
-
-.loaded_hiding .preloader {
-  transition: 0.3s opacity;
-  opacity: 0;
-}
-
-.loaded .preloader {
-  display: none;
 }
