@@ -1,5 +1,6 @@
 import axios from "axios";
 axios.defaults.baseURL = "https://61e433a4fbee6800175eb245.mockapi.io/api/v1";
+
 // !==========используем localStorage===============
 export function saveData(key, payload) {
 	const delay = ~~ (Math.random() * 3000);
@@ -70,10 +71,3 @@ export function removeTodo(id) {
 // }).then(response => response.json());
 	return axios.delete(`/TODOIST/${id}`).then(response => response.data);
 }
-
-export function removeAllTodos() {
-	
-	axios.delete('/TODOIST');
-}
-
-
