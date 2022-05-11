@@ -135,6 +135,7 @@ input:focus::placeholder {
 .done {
   background-color: darkseagreen;
   color: #fff;
+  text-decoration: 2px line-through red;
 }
 
 .need {
